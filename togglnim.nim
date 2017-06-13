@@ -84,3 +84,14 @@ proc callTogglApiEndpoint(endpoint: string, httpMethod = HttpGet, body = %*{}): 
     res: Response = client.request(url, httpMethod = httpMethod, body = $body, headers = headers)
 
   res
+
+
+proc togglGetCurrentUser*(): TogglUser =
+  ## Request the user profile of the user to whom the currently configured API
+  ## token belongs and return it as a TogglUser instance.
+  ##
+  ## Only fields that are officially documented are available on the TogglUser
+  ## instance. Check the documentation of the TogglUser type to see which fields
+  ## those are.
+  let res: Response = callTogglApiEndpoint("/me")
+  newTogglUser(parseJson(res.body)["data"])
