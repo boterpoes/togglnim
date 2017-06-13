@@ -95,3 +95,27 @@ proc togglGetCurrentUser*(): TogglUser =
   ## those are.
   let res: Response = callTogglApiEndpoint("/me")
   newTogglUser(parseJson(res.body)["data"])
+
+
+proc togglUpdateCurrentUser*(t: TogglUser): TogglUser =
+  ## Update the user profile of the user to whome the currently configured API
+  ## token belongs and return the updated profile as a TogglUser instance.
+  ##
+  ## The updated information will be extracted from the given TogglUser
+  ## instance.
+  let
+    body = %*{"user": {
+      "fullname": t.fullname,
+      "email": t.email,
+      "send_product_emails": t.sendProductEmails,
+      "send_weekly_report": t.sendWeeklyReport,
+      "send_timer_notifications": t.sendTimerNotifications,
+      "store_start_and_stop_time": t.storeStartAndStopTime,
+      "beginning_of_week": int(t.beginningOfWeek),
+      "timezone": t.timezone,
+      "timeofday_format": t.timeOfDayFormat,
+      "date_format": t.dateFormat
+    }}
+    res: Response = callTogglApiEndpoint("/me", httpMethod = HttpPut, body = body)
+
+  newTogglUser(parseJson(res.body)["data"])
