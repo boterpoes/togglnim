@@ -135,3 +135,25 @@ proc togglUpdateCurrentUser*(t: TogglUser): TogglUser =
     res: Response = callTogglApiEndpoint("/me", httpMethod = HttpPut, body = body)
 
   newTogglUser(parseJson(res.body)["data"])
+
+
+proc togglCreateClient*(name: string, wid: int, notes: string = ""): TogglClient =
+  ## Create a new client for the workspace specified by ``wid``. The created
+  ## client will be returned as an instance of ``TogglClient``.
+  ##
+  ## Example:
+  ##
+  ## .. code:: nim
+  ##    var client: TogglClient = togglCreateClient("Big Corp", 12345)
+  ##    echo client.name
+  let
+    body = %*{
+      "client": {
+        "name": name,
+        "wid": wid,
+        "notes": notes
+      }
+    }
+    res: Response = callTogglApiEndpoint("/clients", httpMethod = HttpPost, body = body)
+
+  newTogglClient(parseJson(res.body)["data"])
