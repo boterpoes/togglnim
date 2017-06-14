@@ -184,3 +184,27 @@ proc togglGetClient*(cid: int): TogglClient =
   ##    echo client.name
   let res: Response = callTogglApiEndpoint("/clients/" & $cid)
   newTogglClient(parseJson(res.body)["data"])
+
+
+proc togglUpdateClient*(c: TogglClient): TogglClient =
+  ## Update a client in Toggl.
+  ##
+  ## Note that Toggl only allows changing the ``name`` and ``notes`` of a client
+  ## and as such, this procedure will only send those fields in the update.
+  ##
+  ## Example:
+  ##
+  ## .. code:: nim
+  ##    var client: TogglClient = togglGetClient(12345)
+  ##    client.notes = "Loves puppies"
+  ##    togglUpdateClient(client)
+  let
+    body = %*{
+      "client": {
+        "name": c.name,
+        "notes": c.notes
+      }
+    }
+    res: Response = callTogglApiEndpoint("/clients/" & $c.id, httpMethod = HttpPut, body = body)
+
+  newTogglClient(parseJson(res.body)["data"])
