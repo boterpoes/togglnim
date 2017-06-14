@@ -33,6 +33,12 @@ type
     openIdEnabled*: bool
     timezone*: string
 
+  TogglClient* = ref object of RootObj
+    ## An object wrapper around a Toggl client.
+    name*: string
+    wid*: int
+    notes*: string
+
 
 proc newTogglUser(data: JsonNode): TogglUser =
   ## Create a new TogglUser instance from Json data as returned by
@@ -56,6 +62,16 @@ proc newTogglUser(data: JsonNode): TogglUser =
     sendTimerNotifications: data["send_timer_notifications"].getBVal(),
     openIdEnabled: data["openid_enabled"].getBVal(),
     timezone: data["timezone"].getStr()
+  )
+
+
+proc newTogglClient(data: JsonNode): TogglClient =
+  ## Create a new TogglClient instance from Json data as returned by the Toggl
+  ## API.
+  TogglClient(
+    name: data["name"].getStr(),
+    wid: int(data["wid"].getNum()),
+    notes: data{"notes"}.getStr()
   )
 
 
