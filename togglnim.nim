@@ -109,6 +109,12 @@ proc togglGetCurrentUser*(): TogglUser =
   ## Only fields that are officially documented are available on the TogglUser
   ## instance. Check the documentation of the TogglUser type to see which fields
   ## those are.
+  ##
+  ## Example:
+  ##
+  ## .. code:: nim
+  ##    var user = togglGetCurrentUser()
+  ##    echo user.fullname, user.email
   let res: Response = callTogglApiEndpoint("/me")
   newTogglUser(parseJson(res.body)["data"])
 
@@ -119,6 +125,13 @@ proc togglUpdateCurrentUser*(t: TogglUser): TogglUser =
   ##
   ## The updated information will be extracted from the given TogglUser
   ## instance.
+  ##
+  ## Example:
+  ##
+  ## .. code:: nim
+  ##    var user = togglGetCurrentUser()
+  ##    user.email = "johndoe@example.com"
+  ##    togglUpdateCurrentUser(user)
   let
     body = %*{"user": {
       "fullname": t.fullname,
