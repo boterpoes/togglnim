@@ -172,3 +172,15 @@ proc togglCreateClient*(name: string, wid: int, notes: string = ""): TogglClient
     res: Response = callTogglApiEndpoint("/clients", httpMethod = HttpPost, body = body)
 
   newTogglClient(parseJson(res.body)["data"])
+
+
+proc togglGetClient*(cid: int): TogglClient =
+  ## Get the client with id ``cid`` and return it as a ``TogglClient`` instance.
+  ##
+  ## Example:
+  ##
+  ## .. code:: nim
+  ##    var client: TogglClient = togglGetClient(12345)
+  ##    echo client.name
+  let res: Response = callTogglApiEndpoint("/clients/" & $cid)
+  newTogglClient(parseJson(res.body)["data"])
